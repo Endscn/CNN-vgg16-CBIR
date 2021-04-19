@@ -1,8 +1,12 @@
 Tree
 ├── database/
+
 ├── resultcsv/
+
 ├── extract_cnn_vgg16_keras.py
+
 ├── query_online.py
+
 └── index.py
 
 1. database 폴더, resultcsv 폴더 만든다.   > Make "database" folder , "resultcsv" folder
