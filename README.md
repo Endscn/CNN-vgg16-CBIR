@@ -10,7 +10,7 @@ use CNN CBIR and make CNN model
 # 1. Make image same size
 
 1) make img size 1500x1500 
-2) jpg2png
+2) jpg2png , png2jpg
 
 # 2. IMG sort (USE CNN CBIR and LABELING)
 
