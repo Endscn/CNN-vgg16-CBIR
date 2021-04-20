@@ -31,3 +31,20 @@ use CNN CBIR and make CNN model
 
 1) sort with result 
 2) show similar img
+
+
+## Version
+
+    tensorflow==1.13.1
+    tensorflow-estimator==1.13.0
+    tensorflow-gpu==1.13.1
+    opencv-python==4.4.0.46
+    Keras==2.3.1
+    imutils==0.5.4
+    h5py==2.10.0
+    protobuf==3.14.0
+
+
+
+
+
