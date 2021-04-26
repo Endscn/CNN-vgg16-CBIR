@@ -99,13 +99,36 @@ for i,im in enumerate(imlist):
     plt.xlabel(round(scores[rank_ID][i],5))
     print(i , im)
 
-plt.savefig("D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/resultcsv/result" + str(imlist[0]) + ".png")
+imlist_name = imlist[0]
+imlist_name = imlist_name.decode('UTF-8')
+imlist_name = imlist_name.replace(".jpg", "")
+
+plt.savefig("D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/resultcsv/result" + imlist_name + ".png")
 #plt.show()
 
+""" 
+imlist_name = imlist_fake[0]
+tran_tbl = str.maketrans('b\'.jpg','      ')
+imlist_name = imlist_name.decode('UTF-8')
+imlist_name = imlist_name.translate(tran_tbl)
+""" #table 이용한 제거방법 (띄어쓰기가 유지가 됨. results1    .csv
+
+imlist_name4csv = imlist_fake[0]
+imlist_name4csv = imlist_name4csv.decode('UTF-8')
+imlist_name4csv = imlist_name4csv.replace(".jpg", "")
+#replace 이용한 제거방법
+
 for i,im in enumerate(imlist_fake):
-    D_F = D_F.append({"ID": im, str(imlist_fake[0]) + "SCORE": round(scores[rank_ID][i], 6)}, ignore_index=True)
-    print(i)
-D_F.to_csv("D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/resultcsv/result" + str(imlist_fake[0]) + ".csv", encoding='utf-8')
+
+    im = im.decode('UTF-8')
+    im = im.replace(".jpg", "")
+    print(im)
+    print(imlist_name,"번째 사진으로 CSV 생성")
+    D_F = D_F.append({"ID": im, imlist_name4csv + "SCORE": round(scores[rank_ID][i], 6)}, ignore_index=True)
+
+
+
+D_F.to_csv("D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/resultcsv/result" + imlist_name4csv + ".csv", encoding='utf-8')
 
 print("--------------------------------------------------")
 print("            Successfully save csv file")
@@ -120,6 +143,6 @@ for i,im in enumerate(imlist):
     plt.show()
 """
 
-#python query_online.py -query database/1135.jpg -index featureCNN.h5 -result database
+#python query_online.py -query database/1.jpg -index featureCNN.h5 -result database
 
-#
+#26 1622 8917 13891 13481 13429 13356 13314
