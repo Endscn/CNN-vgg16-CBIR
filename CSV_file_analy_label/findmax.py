@@ -82,20 +82,28 @@ dfvalmin = pd.concat([df_sorted_by_values,mindf],axis=1)
 dfvalmin = dfvalmin.rename(columns={0:"MIN"})
 """ # min값 찾기
 
-#maxdf 는 Max값만 찾아둔것. 21년 4월 21일 작성
-df_sorted_by_values = df_test.sort_values(by='ID',ascending=True)
+#maxdf 는 Max값만 찾아둔것. 21년 4월 26일 작성
+df_sorted_by_values = df.sort_values(by='ID',ascending=True)
+y_data = df_sorted_by_values['ID']
+
 df_sorted_by_values = df_sorted_by_values.drop(["ID"],axis=1)
+print(df_sorted_by_values)
 
 #df_sorted_by_values_4_findmax = df_sorted_by_values[df_sorted_by_values.between(0,1, inclusive=False)]
 maxdf = df_sorted_by_values.max(axis=1)
 
 dfvalmax = pd.concat([df_sorted_by_values,maxdf],axis=1)
+dfvalmax = pd.concat([y_data,dfvalmax],axis=1)
 dfvalmax = dfvalmax.rename(columns={0:"MAX"})
 
-print(df_test)
+#y_data는 리스트화 하여 다시쓰자
+y_data = pd.Series.tolist(y_data)
+print(df)
 print(maxdf)
 print(dfvalmax)
 
+print(y_data)
+print(len(y_data))
 
 #------------------------------------------------------------------------------------------
 import time
