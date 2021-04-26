@@ -107,27 +107,51 @@ print(len(y_data))
 
 #------------------------------------------------------------------------------------------
 import time
+import pandas as pd
 #시간 측정
 start = time.time()
 
 namelist =[]
+special_list = []
 
 for keys in dfvalmax.keys():
     namelist.append(keys)
 print(namelist)
+print(maxdf)
+print(len(maxdf))
+print(dfvalmax)
 
-special_list = []
-for k in range(len(maxdf)):         #실제 실행할때는 전체 사용len(maxdf)
-    for i in range(len(namecntlist)):
+"""
+for k in range(len(maxdf)):
+    for i in range(len(namecntlist)):  #namecntlist는 특성의 갯수 현재 총 60여가지의 특성
         if dfvalmax.iloc[k][i]==dfvalmax.iloc[k][-1]:
-            print(k+1,"번째 사진은",i,"번째 특성")
+            print("DataFrame 내의",k+1,"번째 데이터는",i,"번째 특성")
+            print("사진 폴더 내의",y_data[k],"번째 사진")
             print(dfvalmax.iloc[k][i],dfvalmax.iloc[k][-1])
             print(namelist[i])
+            print("------------------------------------------")
             special_list.append(namelist[i])
     print("=============")
-print(special_list)
+"""# len(namecntlist)를 가져오면 안되는 이유는 앞에서부터 가져오는데 ID값을 포함한 dfvalmax에서 찾기때문에 맨 뒤에 하나를 못찾게 된다. 따라서 직접입력한다.
+
+for k in range(len(maxdf)):
+    for i in range(1,59):  #namecntlist는 특성의 갯수 현재 총 60여가지의 특성 맨앞과 맨뒤만 빼고 같은 것을 찾아준다고 생각. (ID값, MAX 이부분을 버려준다.)
+        if dfvalmax.iloc[k][i]==dfvalmax.iloc[k][-1]:
+            print("DataFrame 내의",k+1,"번째 데이터는",i,"번째 특성")
+            print("사진 폴더 내의",y_data[k],"번째 사진")
+            print(dfvalmax.iloc[k][i],dfvalmax.iloc[k][-1])
+            print(namelist[i])
+            print("------------------------------------------")
+            special_list.append(namelist[i])
+    print("=============")
+
+#print(namelist)
+print(len(namelist))
+#print(special_list)
+print(len(special_list))
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+
 #######################################################################
 
 for keynames in dfvalmax.keys():
