@@ -2,7 +2,8 @@
 use CNN CBIR and make CNN model
 
 2021-04-13 19:10
-
+ idea launching
+ 
 2021-04-19 17:15
 
 ## IDEAS -- How can we classify "Emotional(not formed)" images?
@@ -45,6 +46,6 @@ use CNN CBIR and make CNN model
     protobuf==3.14.0
 
 
-
-
+2021-04-26 19:19
+labeling done
 
