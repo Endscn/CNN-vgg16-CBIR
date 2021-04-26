@@ -97,5 +97,36 @@ print(maxdf)
 print(dfvalmax)
 
 
+#------------------------------------------------------------------------------------------
+import time
+#시간 측정
+start = time.time()
+
+namelist =[]
+
+for keys in dfvalmax.keys():
+    namelist.append(keys)
+print(namelist)
+
+special_list = []
+for k in range(len(maxdf)):         #실제 실행할때는 전체 사용len(maxdf)
+    for i in range(len(namecntlist)):
+        if dfvalmax.iloc[k][i]==dfvalmax.iloc[k][-1]:
+            print(k+1,"번째 사진은",i,"번째 특성")
+            print(dfvalmax.iloc[k][i],dfvalmax.iloc[k][-1])
+            print(namelist[i])
+            special_list.append(namelist[i])
+    print("=============")
+print(special_list)
+
+print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+#######################################################################
+
+for keynames in dfvalmax.keys():
+    print(keynames)
+    kkkkk = special_list.count(str(keynames))
+    print(kkkkk)
+
+
 
 
