@@ -45,6 +45,7 @@ use CNN CBIR and make CNN model
     h5py==2.10.0
     protobuf==3.14.0
 
+## log
 
 2021-04-26 19:19
 labeling done
