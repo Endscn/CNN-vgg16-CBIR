@@ -49,3 +49,7 @@ use CNN CBIR and make CNN model
 2021-04-26 19:19
 labeling done
 
+2021-04-28 18:00
+use InceptionV3 model
+Accuracy not converge, Change opt RMSprop -> Adam  & Corrected the learning rate.
+
