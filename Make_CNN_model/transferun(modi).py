@@ -37,6 +37,7 @@ from PIL import Image
 from pathlib import Path
 import os
 import glob
+import time
 
 """
 
@@ -138,8 +139,9 @@ for i in range(len(group_name)):
     count=1
     
     for files in file_list:
-        os.rename(files,folder_path+group_name[i] + "/"+ group_name[i] + str(count) + ".png")
+        os.rename(files,folder_path+group_name[i] + "/"+ group_name1[i] + str(count) + ".png")
         count += 1
+        print(count)
 
     # 시간은 5초정도 소요
 
@@ -154,8 +156,9 @@ for i in range(len(group_name)):
     count=1
     
     for files in file_list:
-        os.rename(files,folder_path+group_name[i] + "/"+ group_name[i] + str(count) + ".png")
+        os.rename(files,folder_path+group_name[i] + "/"+ group_name1[i] + str(count) + ".png")
         count += 1
+        print(count)
     
     #use os.rename
 
@@ -211,7 +214,6 @@ def get_final_test(img_path):
 # In[5]:
 # 라벨링 하기
 
-import time
 start = time.time()  # 시작 시간 저장
 
 train_images, train_labels = get_ds("D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/train_data/")
@@ -221,6 +223,7 @@ print("validation image labeling done")
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
 #1. 1440초 소요 #2. 2389초 소요 #3. 1575초 소요 #4. 1866초 소요
+#5. data cleaning 하고 난 후 875초 소요 다시 정제후 782초 소요
 
 
 # In[6]:
@@ -262,7 +265,7 @@ test_labels = utils.to_categorical(test_labels, num_classes)
 
 
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
-#1. 240초 소요 #3. 155초 소요
+#1. 240초 소요 #3. 155초 소요 #새로 하고나서 74초 소요
 
 print(train_images.shape)
 print(train_labels.shape)
@@ -278,14 +281,18 @@ np.save('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/tra
 np.save('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/test_img_save', test_images) # train_save.npy
 np.save('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/test_lab_save', test_labels) # train_save.npy
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+# 160 초 소요
 
 start = time.time()  # 시작 시간 저장
-train_i = np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/train_img_save.npy')
-train_l = np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/train_lab_save.npy')
-test_i = np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/test_img_save.npy')
-test_l =np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/test_lab_save.npy')
+train_images = np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/train_img_save.npy')
+train_labels = np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/train_lab_save.npy')
+test_images = np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/test_img_save.npy')
+test_labels =np.load('D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/label_img/test_lab_save.npy')
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간 
-#저장하는데 train_image 빼고 90초 전체다 불러오는데 72초 걸림
+
+num_classes = len(class_names)
+
+#저장하는데 train_image 빼고 160초 전체다 불러오는데 40초 걸림
 #print(train_i)
 """
 
@@ -322,7 +329,9 @@ last_output = last_layer.output
 
 #--------------
 model_x = layers.Flatten()(last_output)
-#model_x = layers.Dense(16, activation='relu')(model_x)
+model_x = layers.Dense(512, activation='relu')(model_x)
+model_x = layers.Dense(16, activation='relu')(model_x)
+model_x = layers.Dropout(0.5)(model_x)
 model_x = layers.Dense(num_classes, activation='softmax')(model_x)
 
 model = Model(pre_trained_model.input, model_x)
@@ -337,9 +346,9 @@ model.compile(optimizer=Adam(lr=0.001),
 # 과대적합을 막기위해서 설정
 #early_stopping = EarlyStopping(monitor='val_loss', patience=10)
 
-batch_size = 32
+batch_size = 64
 #batch_size = 128 #변경해서 한번 적용해보자.
-epochs = 15
+epochs = 5
 
 history = model.fit(
     train_images, train_labels,
@@ -352,11 +361,14 @@ history = model.fit(
 )
 
 #새로운 모델 저장 및 사진 저장
-model_name = "test_model" + "_bat" + str(batch_size) + "_epoch" + str(epochs) + "_mixed7"+"_Adam"+"0_0005"
-model.save(model_name+".h5")
+model_file_dir = "D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/testmodels/"
+png_file_dir = "D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/testmodelspng/"
+
+model_name = "test_model" + "_bat" + str(batch_size) + "_epoch" + str(epochs) + "_mixed7"+"_Adam"+"0_001" + "_proto"
+model.save(model_file_dir + model_name + ".h5")
 
 plt_show_acc(history)
-plt.savefig(model_name+".png")
+plt.savefig(png_file_dir + model_name + ".png")
 
 #직전에 한것 아담0.001
 
@@ -370,6 +382,25 @@ plt.savefig(model_name+".png")
 #7트 bat32 / epoch10 / mixed7번 라인에서 끊음 / dense 1024 뺌 / Adam(lr=0.0005) 유의미한 느낌?
 """ #반복없이 한번만 모델만드는 코드
 
+
+"""
+
+def plt_show_loss(history):
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('Model Loss')
+    plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc=0)
+
+def plt_show_acc(history):
+    plt.plot(history.history['acc']) #tensorflow 낮은버전에선 acc 쓰고 2.0 이후버전에선 accuracy 다써주기
+    plt.plot(history.history['val_acc'])
+    plt.title('Model accuracy')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.legend(['Train', 'Test'], loc=0)
+    
 batch_list = [16, 32, 64, 128]
 lr_list = [0.005, 0.001, 0.0005, 0.0001]
 predict_list1 = []
@@ -430,15 +461,23 @@ for lr in lr_list:
             # callbacks=[early_stopping]
         )
 
-        # 새로운 모델 저장 및 사진 저장
-        model_name = "test_model" + "_bat" + str(batch_size) + "_epoch" + str(epochs) + "_mixed7" + "_Adam" + str(lr)
-        model.save(model_name + ".h5")
 
+        #새로운 모델 저장 및 사진 저장
+        model_file_dir = "D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/testmodels/"
+        png_file_dir = "D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/testmodelspng/"
+        
+        model_name = "test_model" + "_bat" + str(batch_size) + "_epoch" + str(epochs) + "_mixed7"+"_Adam"+"0_001" + "_proto"
+        model.save(model_file_dir + model_name + ".h5")
+        
         plt_show_acc(history)
-        plt.savefig(model_name + ".png")
+        plt.savefig(png_file_dir + model_name + ".png")
+        
+        plt.pause(1)
+        plt.close()
+        plt.clf()
 
         My_images = get_final_test(
-            "https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1600272696423.png")  # 글씨 + 캐릭터
+            "https://cdn.withgoods.net/artworks/3EhU0mzhh-B6BD2BFD-2A9E-47EC-9D1D-687CB72AEB50.png?d=1500x1500") #위드굿즈 캘리그라피
         My_predictions = model.predict(My_images)
         print(My_predictions)
         print(group_name)
@@ -500,21 +539,30 @@ for lr in lr_list:
             # callbacks=[early_stopping]
         )
 
-        # 새로운 모델 저장 및 사진 저장
-        model_name = "test_model" + "_bat" + str(batch_size) + "_epoch" + str(epochs) + "_mixed7" + "_Adam" + str(lr) + "_denseplus"
-        model.save(model_name + ".h5")
-
+        #새로운 모델 저장 및 사진 저장
+        model_file_dir = "D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/testmodels/"
+        png_file_dir = "D:/Jupyter/gitCBIR/flask-keras-cnn-image-retrieval-master/testmodelspng/"
+        
+        model_name = "test_model" + "_bat" + str(batch_size) + "_epoch" + str(epochs) + "_mixed7"+"_Adam"+"0_001" + "_proto"
+        model.save(model_file_dir + model_name + ".h5")
+        
         plt_show_acc(history)
-        plt.savefig(model_name + ".png")
+        plt.savefig(png_file_dir + model_name + ".png")
+        
+        plt.pause(1)
+        plt.close()
+        plt.clf()
 
         My_images = get_final_test(
-            "https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1600272696423.png")  # 글씨 + 캐릭터
+            "https://cdn.withgoods.net/artworks/3EhU0mzhh-B6BD2BFD-2A9E-47EC-9D1D-687CB72AEB50.png?d=1500x1500") #위드굿즈 캘리그라피
         My_predictions = model.predict(My_images)
         print(My_predictions)
         print(group_name)
         predict_list2.append(My_predictions)
 
-
+print(predict_list1)
+print(predict_list2)
+""" #여러번 반복해서 최적값 찾는 코드
 
 # In[10]:
 # 모델평가
@@ -540,7 +588,6 @@ def plt_show_acc(history):
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Test'], loc=0)
-    
 #plt_show_loss(history)
 #plt.show()
  
@@ -628,6 +675,7 @@ import requests
 My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1600272696423.png") #글씨 + 캐릭터
 My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1608227644728.png") #사과나무
 My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1614180544168.png")
+My_images = get_final_test("https://cdn.withgoods.net/artworks/3EhU0mzhh-B6BD2BFD-2A9E-47EC-9D1D-687CB72AEB50.png?d=1500x1500") #위드굿즈 캘리그라피
 My_predictions = model.predict(My_images)
 print(My_predictions)
 #predict_name =max(My_predictions)
