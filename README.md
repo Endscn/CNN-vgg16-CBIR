@@ -54,3 +54,6 @@ labeling done
 use InceptionV3 model
 Accuracy not converge, Change opt RMSprop -> Adam  & Corrected the learning rate.
 
+2021-05-04 18:49
+data cleaning sooo haaaard
+14490 -> 8769   img label appropriately.
