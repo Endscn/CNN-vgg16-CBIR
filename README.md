@@ -47,13 +47,17 @@ use CNN CBIR and make CNN model
 
 ## log
 
-2021-04-26 19:19
-labeling done
+    2021-04-26 19:19
+    labeling done
 
-2021-04-28 18:00
-use InceptionV3 model
-Accuracy not converge, Change opt RMSprop -> Adam  & Corrected the learning rate.
+    2021-04-28 18:00
+    use InceptionV3 model
+    Accuracy not converge, Change opt RMSprop -> Adam  & Corrected the learning rate.
 
-2021-05-04 18:49
-data cleaning sooo haaaard
-14490 -> 8769   img label appropriately.
+    2021-05-04 18:49
+    data cleaning sooo haaaard
+    14490 -> 8769   img label appropriately.
+
+    2021-05-07 19:42
+    acc == 0.68
+    rgba2rgb issue
