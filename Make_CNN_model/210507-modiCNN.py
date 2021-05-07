@@ -324,9 +324,9 @@ last_output = last_layer.output
 
 #--------------
 model_x = layers.Flatten()(last_output)
-model_x = layers.Dense(512, activation='relu')(model_x)
-model_x = layers.Dense(16, activation='relu')(model_x)
-model_x = layers.Dropout(0.5)(model_x)
+#model_x = layers.Dense(512, activation='relu')(model_x)
+#model_x = layers.Dense(16, activation='relu')(model_x)
+#model_x = layers.Dropout(0.5)(model_x)
 model_x = layers.Dense(num_classes, activation='softmax')(model_x)
 
 model = Model(pre_trained_model.input, model_x)
@@ -341,7 +341,7 @@ model.compile(optimizer=Adam(lr=learning_rate),
 
 batch_size = 16
 #batch_size = 128 #변경해서 한번 적용해보자.
-epochs = 25
+epochs = 1
 
 history = model.fit(
     train_images, train_labels,
@@ -363,16 +363,89 @@ model.save(model_file_dir + model_name + ".h5")
 plt_show_acc(history)
 plt.savefig(png_file_dir + model_name + ".png")
 
-#직전에 한것 아담0.001
+#My_images = get_final_test("") #픽사베이 기본틀
 
-#1트 bat32/epoch50 no1
-#2트 bat32/epoch5 no2
-#3트 bat32/epoch10 no3
-#4트 bat128/epoch5
-#5트 bat128/epoch10
-#6트 dense 1024->16으로 변경 or 삭제
+My_images = get_final_test(
+            "https://cdn.withgoods.net/artworks/3EhU0mzhh-B6BD2BFD-2A9E-47EC-9D1D-687CB72AEB50.png?d=1500x1500") #위드굿즈 캘리그라피
+            
+My_images = get_final_test("https://cdn.pixabay.com/photo/2020/09/27/07/13/butterfly-5605870_960_720.jpg") #픽사베이 꽃
+My_images = get_final_test("https://cdn.pixabay.com/photo/2021/01/02/12/32/cathedral-5881418_960_720.jpg") #픽사베이 풍경
+My_images = get_final_test("https://cdn.pixabay.com/photo/2015/05/16/19/13/stones-770264_960_720.jpg") #픽사베이 돌패턴
+My_images = get_final_test("https://cdn.pixabay.com/photo/2017/09/18/15/38/moon-2762111_960_720.jpg") #픽사베이 달 그림 (몽환?)(테스트는 사람으로 나옴)
+My_images = get_final_test("https://media.istockphoto.com/photos/super-moon-colorful-sky-with-cloud-and-bright-full-moon-over-seascape-picture-id864947422") #셔터스톡 달그림
+My_images = get_final_test("https://cdn.pixabay.com/photo/2019/12/06/03/42/love-4676528_960_720.jpg") #픽사베이 사람+풍경
 
-#7트 bat32 / epoch10 / mixed7번 라인에서 끊음 / dense 1024 뺌 / Adam(lr=0.0005) 유의미한 느낌?
+My_images = get_final_test("https://cdn.pixabay.com/photo/2020/11/01/13/03/lemon-5703655_960_720.jpg") #픽사베이 레몬패턴
+
+My_images = get_final_test("https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile24.uf.tistory.com%2Fimage%2F256341425934C352244E56") #흑백사진
+My_images = get_final_test("https://t1.daumcdn.net/cfile/tistory/2779B83A5934C5F50E") #가운데 배열된 카메라
+My_images = get_final_test("https://t1.daumcdn.net/cfile/tistory/253AD54F5934BF5D03") #배경
+My_images = get_final_test("https://t1.daumcdn.net/cfile/tistory/272B56485934C0F438") #풍경
+My_images = get_final_test("https://t1.daumcdn.net/cfile/tistory/26369A495934BFBB2E") #풍경
+My_images = get_final_test("https://pbs.twimg.com/media/Dm4XtpZUwAMep6a?format=jpg&name=large") #인물 아이유
+My_images = get_final_test("https://pbs.twimg.com/media/E0szcAEVgAIOl3Y?format=jpg&name=4096x4096") #인물 여러명
+My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1620315690958.png") #다이아몬드같으거
+
+My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1620271223431.png") #풍경같은거 보라색
+
+My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1616217076658.png") #캘리그래피
+
+My_images = get_final_test("https://qquing.net/data/upload/manga/2021_05_17940bc719b4da2fa.jpg") #공룡캐릭터
+
+My_images = get_final_test("https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1613140072231.png") #캘리그래피
+
+My_predictions = model.predict(My_images)
+print(My_predictions)
+
+My_predict_max = max(My_predictions[0])
+print(My_predict_max)
+print(group_name)
+
+#-----------첫번째 큰값
+for i in range(len(group_name)):
+    if My_predictions[0][i] == My_predict_max:
+        print(My_predictions[0][i],"= max 값")
+        #print(group_name[i],"= max 값의 카테고리")
+        print(i+1,"= max값이 존재하는 위치")
+        max_cate = group_name[i]  #df.columns 에서 i번째 있는 퍼센트를 maxcate에 넣는다.
+print(max_cate)
+print("---------------------------------------")
+
+#-----------두번째 큰값
+My_predict_sec = sorted(My_predictions[0],reverse=True)
+My_predict_sec = My_predict_sec[1]
+#print(My_predict_sec)
+
+for i in range(len(group_name)):
+    if My_predictions[0][i] == My_predict_sec:
+        print(My_predictions[0][i],"= 두번째로 큰 값")
+        #print(group_name[i],"= 두번째로 큰 값의 카테고리")
+        print(i+1,"= 두번째로 큰 값이 존재하는 위치")
+        sec_max_cate = group_name[i]
+print(sec_max_cate)
+print("---------------------------------------")
+
+#-----------세번째 큰값
+My_predict_trd = sorted(My_predictions[0],reverse=True)
+My_predict_trd = My_predict_trd[2]
+#print(My_predict_trd)
+
+for i in range(len(group_name)):
+    if My_predictions[0][i] == My_predict_trd:
+        print(My_predictions[0][i],"= 세번째로 큰 값")
+        #print(group_name[i],"= 세번째로 큰 값의 카테고리")
+        print(i+1,"= 세번째로 큰 값이 존재하는 위치")
+        trd_max_cate = group_name[i]
+print(trd_max_cate)
+print("---------------------------------------")
+
+#이미지 분석시 다음과 같이 나온다.
+img_path = "https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1613140072231.png" 
+images = np.array(Image.open(requests.get(img_path,stream=True).raw).convert('RGB').resize((300,300),Image.ANTIALIAS))
+images = Image.fromarray(images,'RGB')
+images.show()
+
+
 """  # 반복없이 한번만 모델만드는 코드
 
 """
@@ -583,8 +656,8 @@ def plt_show_acc(history):
     plt.legend(['Train', 'Test'], loc=0)
 
 
-# plt_show_loss(history)
-# plt.show()
+plt_show_loss(history)
+plt.show()
 
 plt_show_acc(history)
 plt.show()
@@ -596,7 +669,7 @@ predictions = model.predict(train_images)
 print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
 
 
-# 70초 소요
+# 30초 소요
 
 # In[13]:
 # 전체 예측한 사진을 그림으로 나타내기
@@ -679,6 +752,81 @@ print(group_name)
 
 # In[15]:
 
-
+"""
 # get_ipython().system('python --version')
 
+def get_final_test(img_path):
+    #To make images np.zeros(1,256,256,3)
+    images = np.array(Image.open(requests.get(img_path,stream=True).raw).convert('RGB').resize((300,300),Image.ANTIALIAS))
+    images = images.astype('float32') /255
+    images = (np.expand_dims(images,0))
+    return images
+
+
+
+
+
+
+canvas_width = 1500
+canvas_height = 1500
+canvas = np.zeros((canvas_width, canvas_height, 3), np.uint8)
+
+
+resp = requests.get(image_Address, stream=True).raw
+image = np.asarray(bytearray(resp.read()), dtype="uint8")
+
+img_path = "https://we2d-app.s3.ap-northeast-2.amazonaws.com/designedImg/1613140072231.png"
+images = np.array(Image.open(requests.get(img_path,stream=True).raw).convert().resize((300,300),Image.ANTIALIAS))
+images = Image.fromarray(images)
+images.show()
+
+try:
+    resp = requests.get(img_path, stream=True).raw
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_UNCHANGED)
+    print(image.shape)
+    if len(image.shape) > 2 and image.shape[2] == 4:
+        #convert the image from RGBA2RGB
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+    print(image.shape)
+except:
+    pass
+
+
+
+
+resp = requests.get(img_path, stream=True).raw
+image = np.asarray(bytearray(resp.read()), dtype="uint8")
+image = cv2.imdecode(image, cv2.IMREAD_UNCHANGED)
+print(image.shape)
+
+if len(image.shape) > 2 and image.shape[2] == 4:
+    #convert the image from RGBA2RGB
+    image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+print(image.shape)
+image.show()
+
+images = Image.fromarray(image,'RGB')
+images.show()
+
+
+resp = requests.get(img_path, stream=True).raw
+image = np.asarray(bytearray(resp.read()), dtype="uint8")
+print(image.shape)
+
+png = Image.open(img_path)
+print(png.size)
+png.load() # required for png.split()
+
+#png.size 만한 흰색 창 만들기
+background = Image.new("RGB", png.size, (255, 255, 255))
+
+
+background.paste(png, mask=png.split()[3]) # 3 is the alpha channel
+
+background.save('foo.png', 'PNG', quality=100)
+
+image = cv2.imread("",cv2.IMREAD_UNCHANGED)
+cv2.imshow("image",image)
+cv2.waitKey(0)
+""" #수정해야 할 것들 RGBA2RGB 처리하는법..
