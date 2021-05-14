@@ -61,3 +61,8 @@ use CNN CBIR and make CNN model
     2021-05-07 19:42
     acc == 0.68
     rgba2rgb issue
+
+    2021-05-14 13:45
+    final cnn test update 
+    test acc= 0.65
+    little lack of classification criteria 
