@@ -33,6 +33,10 @@ use CNN CBIR and make CNN model
 1) sort with result 
 2) show similar img
 
+# 4-1. Find Outlier and Remove
+
+1) Outlier detection
+2) Mean or Median or what
 
 ## Version
 
@@ -66,3 +70,6 @@ use CNN CBIR and make CNN model
     final cnn test update 
     test acc= 0.65
     little lack of classification criteria 
+    
+    2021-05-16 21:18
+    outlier detection has begin
