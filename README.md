@@ -39,7 +39,8 @@ use CNN CBIR and make CNN model
 2) Mean or Median or what
 
 ## Version
-
+    
+    Python 3.6.5
     tensorflow==1.13.1
     tensorflow-estimator==1.13.0
     tensorflow-gpu==1.13.1
