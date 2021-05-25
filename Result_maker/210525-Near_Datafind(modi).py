@@ -35,6 +35,7 @@ def second_max(input_predictions):
     return sec_max_cate
 
 #trimed_df_list = [] # trimed_df_list에다가 오브젝트에 저장된 유저의 평균값 받아오기
+trimed_df_list = mean_df_list
 
 trimed_df_list_arr = [np.array(trimed_df_list)]
 print(trimed_df_list_arr)
@@ -42,10 +43,12 @@ trim_class = first_max(trimed_df_list_arr)
 print(trim_class)
 
 print(type(trim_class))
-print(df[trim_class])
-print(row[trim_class])
 # 받아온 데이터 프레임 가져오면 된다.[[1,2],[3,4],[1,3]] 이런 형태의 데이터 그대로 넣어도 됨.
+
+
 # df = pd.DataFrame() #형식맞춰서 우리 모든 이미지 데이터프레임으로 가져오기
+df = pd.DataFrame(database_pred, columns=group_name)
+print(df)
 df.columns = group_name #컬럼명은 group_name 순서대로 가져옴
 
 #----------------------------------------------------------
@@ -54,7 +57,10 @@ df.columns = group_name #컬럼명은 group_name 순서대로 가져옴
 print('저장된 평균값:')
 row = pd.DataFrame(trimed_df_list).T
 row.columns = group_name
+row = row.loc[0,:]
 print(row)
+print(type(row))
+print(df)
 df = df.astype(dtype=float, copy=True, errors='raise')
 
 # 임의로 생성한 유사한 행에 대해서 마스크 생성,적용
@@ -63,11 +69,13 @@ df = df.astype(dtype=float, copy=True, errors='raise')
 # 지금같은 경우 df의 dtype을 변경해서 쓰는걸 해보자.
 
 mask = np.logical_and.reduce([
-    abs(df[trim_class] - row[trim_class])>=1.0
+    abs(df[trim_class] - row[trim_class]) <= 0.1
 ])
 
+print(df[trim_class]-row[trim_class])
+print(df[trim_class])
+print(row[trim_class])
 
 print('"Similar" Results:')
 df_filtered = df.loc[mask, :]
 print(df_filtered)
-
