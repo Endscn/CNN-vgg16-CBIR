@@ -74,3 +74,6 @@ use CNN CBIR and make CNN model
     
     2021-05-16 21:18
     outlier detection has begin
+    
+    2021-05-28
+    representative image setting
