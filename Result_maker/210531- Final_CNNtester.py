@@ -10,8 +10,8 @@ from tensorflow import keras
 import numpy as np
 from PIL import Image
 import requests
-from keras.models import load_model
-
+# from keras.models import load_model
+# import tensorflowjs as tfjs
 # In[2]:
 # 모델 불러오기
 
@@ -36,21 +36,26 @@ def get_final_test(img_path):
     # png에 이미지 불러오기
     png = Image.open(requests.get(img_path, stream=True).raw)
     png_nparray = np.array(png)
+    print(png.size)
     try:
         if png_nparray.shape[2] == 3:
             #print(png_nparray.shape)
             #print("3채널 이미지일때 결과")
-            background = Image.new("RGB", png.size, (255, 255, 255))
-
-            # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
-            background.paste(png)  # 3 is the alpha channel
+            if png.size[1]>=png.size[0]:
+                background = Image.new("RGB", (png.size[1]+10,png.size[1]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(int((png.size[1]+10-png.size[0])/2),5))  # 3 is the alpha channel
+            else:
+                background = Image.new("RGB", (png.size[0]+10,png.size[0]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(5,int((png.size[0]+10-png.size[1])/2)))  # 3 is the alpha channel
             background = background.resize((300, 300), Image.ANTIALIAS)
 
             # 합쳐진 이미지를 모델에 넣을 수 있도록 (1,300,300,3) 형식으로 차원을 하나 늘려준다.
             images = np.array(background)
             images = images[:, :, ::-1].copy()
             # print(images.shape)
-            #cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
+            cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
             images = images.astype('float32') / 255
             images = (np.expand_dims(images, 0))
 
@@ -58,17 +63,20 @@ def get_final_test(img_path):
         elif png_nparray.shape[2] == 4:
             #print(png_nparray.shape)
             #print("4채널 이미지일때 결과")
-
-            background = Image.new("RGB", png.size, (255, 255, 255))
-
-            # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
-            background.paste(png, mask=png.split()[3])  # 3 is the alpha channel
+            if png.size[1]>=png.size[0]:
+                background = Image.new("RGB", (png.size[1]+10,png.size[1]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(int((png.size[1]+10-png.size[0])/2),5), mask=png.split()[3])  # 3 is the alpha channel
+            else:
+                background = Image.new("RGB", (png.size[0]+10,png.size[0]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(5,int((png.size[0]+10-png.size[1])/2)), mask=png.split()[3])  # 3 is the alpha channel
             background = background.resize((300, 300), Image.ANTIALIAS)
 
             # 합쳐진 이미지를 모델에 넣을 수 있도록 (1,300,300,3) 형식으로 차원을 하나 늘려준다.
             images = np.array(background)
             images = images[:, :, ::-1].copy()
-            #cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
+            cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
             # print(images.shape)
             images = images.astype('float32') / 255
             images = (np.expand_dims(images, 0))
@@ -76,16 +84,19 @@ def get_final_test(img_path):
         elif png_nparray.shape[2] == 2:
             #print(png_nparray.shape)
             #print("투명 2채널 이미지일때 결과")
-
-            background = Image.new("RGB", png.size, (255, 255, 255))
-
-            # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
-            background.paste(png, mask=png.split()[1])  # 3 is the alpha channel
+            if png.size[1]>=png.size[0]:
+                background = Image.new("RGB", (png.size[1]+10,png.size[1]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(int((png.size[1]+10-png.size[0])/2,5)), mask=png.split()[1])  # 3 is the alpha channel
+            else:
+                background = Image.new("RGB", (png.size[0]+10,png.size[0]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(5,int((png.size[0]+10-png.size[1])/2)), mask=png.split()[1])  # 3 is the alpha channel
             background = background.resize((300, 300), Image.ANTIALIAS)
 
             # 합쳐진 이미지를 모델에 넣을 수 있도록 (1,300,300,3) 형식으로 차원을 하나 늘려준다.
             images = np.array(background)
-            #cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
+            cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
             # print(images.shape)
             images = images.astype('float32') / 255
             images = (np.expand_dims(images, 0))
@@ -95,20 +106,24 @@ def get_final_test(img_path):
     except:
         #print(png_nparray.shape)
         #print("2채널 이미지일때 결과")
-        background = Image.new("RGB", png.size, (255, 255, 255))
+            if png.size[1]>=png.size[0]:
+                background = Image.new("RGB", (png.size[1]+10,png.size[1]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(int((png.size[1]+10-png.size[0])/2),5))  # 3 is the alpha channel
+            else:
+                background = Image.new("RGB", (png.size[0]+10,png.size[0]+10), (255, 255, 255))
+                # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
+                background.paste(png, box=(5,int((png.size[0]+10-png.size[1])/2)))  # 3 is the alpha channel
+            background = background.resize((300, 300), Image.ANTIALIAS)
 
-        # background에 png에서 투명을 뺀 채널 가져와서 합성하고 300,300으로 맞춰서 테스트 가능하게 만들기.
-        background.paste(png)  #
-        background = background.resize((300, 300), Image.ANTIALIAS)
-
-        # 합쳐진 이미지를 모델에 넣을 수 있도록 (1,256,256,3) 형식으로 차원을 하나 늘려준다.
-        images = np.array(background)
-        # print(images.shape)
-        #cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
-        images = images.astype('float32') / 255
-        images = (np.expand_dims(images, 0))
-
+            # 합쳐진 이미지를 모델에 넣을 수 있도록 (1,256,256,3) 형식으로 차원을 하나 늘려준다.
+            images = np.array(background)
+            # print(images.shape)
+            cv2.imwrite("foo.png",images) #imwrite 이용하면 실제로 어떻게 보이는지 볼 수 있다.
+            images = images.astype('float32') / 255
+            images = (np.expand_dims(images, 0))
     return images
+
 
 # 최댓값 카테고리 정의
 def first_max(input_predictions):
@@ -161,12 +176,24 @@ def third_max(input_predictions):
 
 My_images = get_final_test("https://imagescdn.gettyimagesbank.com/500/21/424/260/0/1316235109.jpg") #예시 이미지 (주소로 바로 넣어주면 테스트 가능)
 
+My_images = get_final_test("https://imagescdn.gettyimagesbank.com/500/201906/jv11367123.jpg")
+#https://imagescdn.gettyimagesbank.com/500/202102/jv12240601.jpg
+# 이 이미지가 사람에 맞는듯
+
 # In[4]:
 # model.predict() 사용해서 점수 구하기. 이걸 쓰면 0.8 이런 퍼센트 나옴
 My_predictions = Test_model.predict(My_images)
 My_predictions_result = My_predictions[0].tolist()
 print(My_predictions_result)
-#print(My_predictions)
 
 #group_name은 위치 비교하라고 넣어둠
-# print(group_name)
+print(group_name)
+
+#-----------첫번째 큰값
+print(first_max(My_predictions))
+
+#-----------두번째 큰값
+print(second_max(My_predictions))
+
+#-----------세번째 큰값
+# third_max(My_predictions)
