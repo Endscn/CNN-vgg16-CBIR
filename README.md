@@ -77,3 +77,8 @@ use CNN CBIR and make CNN model
     
     2021-05-28
     representative image setting
+    
+    2021-06-04 19:37
+    
+    model completion
+    random_picture_acc = 0.75
